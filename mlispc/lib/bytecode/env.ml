@@ -214,4 +214,8 @@ let with_functions =
 let create ?(stack = Stack.create ()) ?(functions = with_functions) () =
   { stack; functions }
 
-let optimise _env arr = arr
+let optimise _env arr =
+  Array.filter_map arr ~f:(fun instr ->
+      match instr with
+      | `Move (from, into) when Value.equal from into -> None
+      | other -> Some other)
