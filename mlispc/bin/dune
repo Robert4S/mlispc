@@ -1,0 +1,4 @@
+(executable
+ (public_name mlispc)
+ (name main)
+ (libraries mlispc zstd))
