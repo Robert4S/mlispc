@@ -1,0 +1,6 @@
+(executable
+ (public_name mlisprun)
+ (name main)
+ (libraries mlisprun core_unix.command_unix zstd)
+ (preprocess
+  (pps ppx_let)))
