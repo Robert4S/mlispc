@@ -107,7 +107,18 @@ and eval_into : Value.t t -> Value.t -> Bcast.t -> (op array, string) result =
       let res = Array.append call [| `Move (`Global 0, register) |] in
       res
   | Fun { args; body } -> eval_fun env register args body
+  | If { cond; then_; else_ } -> eval_if env register cond then_ else_
   | Defun _ -> assert false
+
+and eval_if env register cond then_ else_ =
+  let open Result.Let_syntax in
+  let%bind cond_addr = incr env in
+  let%bind cond = eval_into env cond_addr cond in
+  let%bind then_ = eval_into env register then_ in
+  let%bind else_ = eval_into env register else_ in
+  let then_ = Array.to_list then_ in
+  let else_ = Array.to_list else_ in
+  assert false
 
 and free_vars env body args =
   let vars = bound body in

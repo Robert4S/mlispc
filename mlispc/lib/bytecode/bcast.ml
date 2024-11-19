@@ -11,6 +11,7 @@ and t =
   | Float of float
   | Atom of string
   | Fun of { args : string list; body : t }
+  | If of { cond : t; then_ : t; else_ : t }
 [@@deriving show, eq, ord]
 
 exception Unsupported of string
@@ -34,6 +35,11 @@ let rec of_expr (expr : Ast.expr) : t option =
           | _ -> assert false)
       in
       return @@ Fun { args; body }
+  | List [ Atom "if"; cond; then_; else_ ] ->
+      let* cond = of_expr cond in
+      let* then_ = of_expr then_ in
+      let* else_ = of_expr else_ in
+      return @@ If { cond; then_; else_ }
   | List (funct :: args) ->
       let* args = List.map args ~f:of_expr |> sequence in
       let* funct = of_expr funct in
